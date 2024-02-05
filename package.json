@@ -2,10 +2,10 @@
   "name": "lo",
   "version": "0.0.2",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "dev": "nodemon app.js",
-    "start": "node app.js",
+    "dev": "nodemon index.js",
+    "start": "node index.js",
     "test": "jest"
   },
   "keywords": [],
