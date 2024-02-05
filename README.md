@@ -1,0 +1,1 @@
+para ejercutar la base de datos mongo en docker: docker compose up -d;
