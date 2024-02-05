@@ -1,6 +1,6 @@
 // init.js
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const User = require('./models/user');
 const config = require('./config.js');
 
