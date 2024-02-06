@@ -21,7 +21,7 @@ const productSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
-    email: {
+    gmail: {
       type: String,
       unique: true,
     },
