@@ -10,7 +10,7 @@ require("dotenv").config();
 const app = express();
 
 const corsOptions={
-    origin: " https://master--parkinglocation1.netlify.app/ContactUs",
+    origin: " https://master--parkinglocation1.netlify.app",
     credencials: true,
 }
 
