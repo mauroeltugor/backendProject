@@ -9,12 +9,19 @@ require("dotenv").config();
 
 const app = express();
 
+const corsOptions={
+    origin: " https://master--parkinglocation1.netlify.app/ContactUs",
+    credencials: true,
+}
+
 app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
 app.set("json spaces", 4);
 app.use(express.urlencoded({ extended: true }));
+
+
 
 const generateTokenSecret = () => {
     return crypto.randomBytes(64).toString("hex");
