@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
 const { authenticate, checkRole } = require("./src/middlewares/authenticate");
 const crypto = require("crypto");
 const helmet = require("helmet");
@@ -14,16 +13,12 @@ const corsOptions={
     credencials: true,
 }
 
-app.use(cors({
-    origin: '*'
-}));
+app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
 app.set("json spaces", 4);
 app.use(express.urlencoded({ extended: true }));
-
-
 
 const generateTokenSecret = () => {
     return crypto.randomBytes(64).toString("hex");
@@ -31,22 +26,6 @@ const generateTokenSecret = () => {
 
 process.env.ACCESS_TOKEN_SECRET = generateTokenSecret();
 process.env.REFRESH_TOKEN_SECRET = generateTokenSecret();
-
-async function connectToDatabase() {
-    try {
-        await mongoose.connect(process.env.BD_CONNECTION_STRING, {
-           // useNewUrlParser: true,  
-           // useUnifiedTopology: true,
-            //useCreateIndex: true,
-        });
-        console.log("Connected to MongoDB ....");
-    } catch (error) {
-        console.error("Error connecting to MongoDB:", error.message);
-        process.exit(1);
-    }
-}
-
-connectToDatabase();
 
 app.use("/api/signup", require("./src/routes/signup"));
 app.use("/api/login", require("./src/routes/login"));
