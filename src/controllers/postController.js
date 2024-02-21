@@ -1,21 +1,24 @@
 const Post = require('../models/post.js');
 const Parqueadero = require('../models/availParking.js');
-const connectToDatabase = require('../../mongo.js')();
 
 async function createPost(req, res) {
   const { longitud, latitud } = req.body;
   
   try {
     // Conectar a la base de datos
-    const db = await connectToDatabase();
-
+    
     // Consultar la colección de parqueaderos
-    const parqueaderos = await db.find({}, 'latitud longitud');
+    const parqueaderos = await Parqueadero.find();
+
+    let parqueaderoExistente;
 
     // Verificar si hay coincidencias de coordenadas
-    
-    const parqueaderoExistente = parqueaderos.find(parqueadero => parqueadero.longitud === longitud && parqueadero.latitud === latitud);
-
+    if(parqueaderos[0].longitud === longitud && parqueaderos[0].latitud === latitud){
+      parqueaderoExistente = true;
+    }else{
+      parqueaderoExistente = false;
+    }
+  
     if (!parqueaderoExistente) {
       console.log("Error: Las coordenadas no coinciden");
       return res.status(400).send("Las coordenadas proporcionadas no coinciden con un parqueadero existente.");
@@ -37,11 +40,6 @@ async function createPost(req, res) {
     res.status(500).send(error);
   }
 }
-
-module.exports = createPost;
-
-
-
 
 async function getAllPosts(req, res) {
   try {

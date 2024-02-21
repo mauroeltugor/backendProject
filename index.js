@@ -4,6 +4,7 @@ const { authenticate, checkRole } = require("./src/middlewares/authenticate");
 const crypto = require("crypto");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const { default: mongoose } = require("mongoose");
 require("dotenv").config();
 
 const app = express();
@@ -26,6 +27,22 @@ const generateTokenSecret = () => {
 
 process.env.ACCESS_TOKEN_SECRET = generateTokenSecret();
 process.env.REFRESH_TOKEN_SECRET = generateTokenSecret();
+
+async function connectToDatabase() {
+    try {
+        await mongoose.connect(process.env.BD_CONNECTION_STRING, {
+           // useNewUrlParser: true,  
+           // useUnifiedTopology: true,
+            //useCreateIndex: true,
+        });
+        console.log("Connected to MongoDB ....");
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error.message);
+        process.exit(1);
+    }
+}
+
+connectToDatabase();
 
 app.use("/api/signup", require("./src/routes/signup"));
 app.use("/api/login", require("./src/routes/login"));

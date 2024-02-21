@@ -15,5 +15,5 @@ const parqueaderoSchema = new mongoose.Schema({
   }
 });
 
-const Parqueadero = mongoose.model("Parqueadero", parqueaderoSchema);
+const Parqueadero = mongoose.model("parqueaderoexistente", parqueaderoSchema);
 module.exports = Parqueadero;
