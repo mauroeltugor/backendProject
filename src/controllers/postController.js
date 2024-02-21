@@ -13,10 +13,12 @@ async function createPost(req, res) {
     let parqueaderoExistente;
 
     // Verificar si hay coincidencias de coordenadas
-    if(parqueaderos[0].longitud === longitud && parqueaderos[0].latitud === latitud){
-      parqueaderoExistente = true;
-    }else{
-      parqueaderoExistente = false;
+    for(let i = 0;i <= parqueaderos.length; i += 1){
+      if(parqueaderos[i].longitud === longitud && parqueaderos[i].latitud === latitud){
+        parqueaderoExistente = true;
+      }else{
+        parqueaderoExistente = false;
+      }
     }
   
     if (!parqueaderoExistente) {
@@ -97,3 +99,12 @@ module.exports = {
   getPostById,
   deletePost
 };
+
+
+/*{
+  "title": "Centro",
+  "content": "Contenido de prueba",
+  "latitud": -75.667875,
+  "longitud": 4.5406386,
+  "puestos": 10
+}*/
