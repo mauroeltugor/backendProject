@@ -1,7 +1,32 @@
 const Post = require('../models/post.js');
+const Parqueadero = require('../models/availParking.js');
 
 async function createPost(req, res) {
+  
   try {
+    // Conectar a la base de datos
+    
+    // Consultar la colección de parqueaderos
+    const { longitud, latitud } = req.body;
+
+  const parqueaderos = await Parqueadero.find();
+
+  let parqueaderoExistente = false;
+
+// Verificar si hay coincidencias de coordenadas
+  for (let i = 0; i < parqueaderos.length; i++) {
+    if (parqueaderos[i].longitud === longitud && parqueaderos[i].latitud === latitud) {
+      parqueaderoExistente = true;
+      break; // Salir del bucle una vez que se encuentra una coincidencia
+  }
+}
+
+    if (!parqueaderoExistente) {
+      console.log("Error: Las coordenadas no coinciden");
+      return res.status(400).send("Las coordenadas proporcionadas no coinciden con un parqueadero existente.");
+    }
+
+    // Si las coordenadas son válidas, crear el post
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
@@ -9,11 +34,11 @@ async function createPost(req, res) {
       latitud: req.body.latitud,
       puestos: req.body.puestos,
     });
-    await post.save();
 
+    await post.save();
     res.send(post);
-  
   } catch (error) {
+    console.error('Error al crear el post:', error);
     res.status(500).send(error);
   }
 }
