@@ -1,10 +1,10 @@
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
 const { authenticate, checkRole } = require("./src/middlewares/authenticate");
 const crypto = require("crypto");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const { default: mongoose } = require("mongoose");
 require("dotenv").config();
 
 const app = express();
@@ -14,16 +14,12 @@ const corsOptions={
     credencials: true,
 }
 
-app.use(cors({
-    origin: '*'
-}));
+app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
 app.set("json spaces", 4);
 app.use(express.urlencoded({ extended: true }));
-
-
 
 const generateTokenSecret = () => {
     return crypto.randomBytes(64).toString("hex");

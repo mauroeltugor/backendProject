@@ -21,6 +21,12 @@ async function createPost(req, res) {
   }
 }
 
+  if (parqueaderoExistente) {
+    console.log("El parqueadero existe");
+  } else {
+    console.log("El parqueadero no existe");
+}
+
     if (!parqueaderoExistente) {
       console.log("Error: Las coordenadas no coinciden");
       return res.status(400).send("Las coordenadas proporcionadas no coinciden con un parqueadero existente.");
@@ -43,8 +49,6 @@ async function createPost(req, res) {
   }
 }
 
-
-
 async function getAllPosts(req, res) {
   try {
     const posts = await Post.find();
@@ -59,7 +63,7 @@ async function updatePost(req, res) {
     const post = await Post.findByIdAndUpdate(
       req.params.id,
       {
-        title: req.body.title, 
+        title: req.body.title,
         content: req.body.content,
         longitud: req.body.longitud,
         latitud: req.body.latitud,
@@ -101,3 +105,12 @@ module.exports = {
   getPostById,
   deletePost
 };
+
+
+/*{
+  "title": "Centro",
+  "content": "Contenido de prueba",
+  "latitud": -75.667875,
+  "longitud": 4.5406386,
+  "puestos": 10
+}*/
