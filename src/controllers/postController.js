@@ -1,53 +1,82 @@
 const Post = require('../models/post.js');
 const Parqueadero = require('../models/availParking.js');
+const express = require('express');
+const router = express.Router();
+const nodemailer = require('nodemailer');
 
-async function createPost(req, res) {
-  
+
+// Configuración de Nodemailer
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user : "parkinlocation753@gmail.com",
+    pass: "rvhe hydp zxzo arvt",
+  },
+});
+
+// Función para enviar correo electrónico
+async function sendEmail(post) {
   try {
-    // Conectar a la base de datos
-    
-    // Consultar la colección de parqueaderos
-    const { longitud, latitud } = req.body;
+    const correoHTML = `
+      <h2>Nueva inserción de post</h2>
+      <p><strong>Título:</strong> ${post.title}</p>
+      <p><strong>Contenido:</strong> ${post.content}</p>
+      <p><strong>Longitud:</strong> ${post.longitud}</p>
+      <p><strong>Latitud:</strong> ${post.latitud}</p>
+      <p><strong>Puestos:</strong> ${post.puestos}</p>
+    `;
 
-  const parqueaderos = await Parqueadero.find();
+    const mailOptions = {
+      from: 'parkinlocation753@gmail.com',
+      to: 'parkinlocation753@gmail.com',
+      subject: 'Nueva inserción de post',
+      html: correoHTML,
+    };
 
-  let parqueaderoExistente = false;
-
-// Verificar si hay coincidencias de coordenadas
-  for (let i = 0; i < parqueaderos.length; i++) {
-    if (parqueaderos[i].longitud === longitud && parqueaderos[i].latitud === latitud) {
-      parqueaderoExistente = true;
-      break; // Salir del bucle una vez que se encuentra una coincidencia
+    await transporter.sendMail(mailOptions);
+    console.log('Correo electrónico enviado correctamente');
+  } catch (error) {
+    console.error('Error al enviar el correo electrónico:', error);
   }
 }
 
-  if (parqueaderoExistente) {
-    console.log("El parqueadero existe");
-  } else {
-    console.log("El parqueadero no existe");
-}
+// Ruta para crear un nuevo post
+const createPost = async (req, res) => {
+  try {
+    const { longitud, latitud } = req.body;
 
-    if (!parqueaderoExistente) {
-      console.log("Error: Las coordenadas no coinciden");
-      return res.status(400).send("Las coordenadas proporcionadas no coinciden con un parqueadero existente.");
+    const parqueaderos = await Parqueadero.find();
+
+    let parqueaderoExistente = false;
+
+    for (let i = 0; i < parqueaderos.length; i++) {
+      if (parqueaderos[i].longitud === longitud && parqueaderos[i].latitud === latitud) {
+        parqueaderoExistente = true;
+        break;
+      }
     }
 
-    // Si las coordenadas son válidas, crear el post
     const post = new Post({
       title: req.body.title,
       content: req.body.content,
       longitud: req.body.longitud,
       latitud: req.body.latitud,
       puestos: req.body.puestos,
+      estado: parqueaderoExistente
     });
 
     await post.save();
+
+    if (!parqueaderoExistente) {
+      await sendEmail(post);
+    }
+
     res.send(post);
   } catch (error) {
     console.error('Error al crear el post:', error);
     res.status(500).send(error);
   }
-}
+};
 
 async function getAllPosts(req, res) {
   try {

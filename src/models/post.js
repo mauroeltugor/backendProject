@@ -22,6 +22,10 @@ const postSchema = new mongoose.Schema({
   puestos: {
     type: Number,
     required: true,
+  },
+  estado: {
+    type: Boolean,
+    required: true
   }
 });
 
